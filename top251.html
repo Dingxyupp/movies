@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .container{
+            margin-top: 50px;
+            width: 100%;
+            height: 600px;
+            float: left;
+            background: #e4e3e3;
+        }
+        </style>
+    <script src="echarts.min.js"></script>
+    <script src="data.js"></script>
+</head>
+<body>
+<div class="container">
+
+</div>
+<script>
+    let container=document.querySelector('.container')
+    let mychart=echarts.init(container)
+    let series=[];
+    let selected={};
+    categories.forEach(elem=>{
+        let movies=data.filter(ele=>ele[4].includes(elem))
+        if(elem=='全部'){
+            selected[elem]=true
+        }else{
+            selected[elem]=false
+        }
+        let obj={
+            name:elem,
+            data:elem=='全部'?data:movies,
+            type:'scatter',
+            symbolSize:function(data){
+                return Math.ceil(data[2]/10)
+            },
+            label: {
+                emphasis: {
+                    trigger:'item',
+                    show: true,
+                    formatter: function (param) {
+                        return `
+                        ${param.data[3]}
+                        ${param.data[1]}  ${param.data[4]}
+
+                        `;
+                    },
+                    position: 'top'
+                }
+            },
+        }
+        series.push(obj)
+    })
+    let option={
+        backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+            offset: 0,
+            color: '#f7f8fa'
+        }, {
+            offset: 1,
+            color: '#cdd0d5'
+        }]),
+        title: {
+            text: '豆瓣top250'
+        },
+        legend: {
+            right: 10,
+            data: ['1990', '2015']
+        },
+        xAxis: {
+            name:'评论人数',
+            splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+            }
+        },
+        yAxis: {
+            name:'评分',
+            splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+            },
+            scale: true
+        },
+        legend:{
+            data:categories,
+            selected,
+            selectedMode:'single',
+        },
+         series,
+
+    }
+    mychart.setOption(option)
+</script>
+</body>
+</html>
